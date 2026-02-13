@@ -1,0 +1,8 @@
+*.retry
+.ansible/
+.vscode/
+.vault_pass
+.DS_Store
+__pycache__
+.claude/
+.env

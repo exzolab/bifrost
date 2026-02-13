@@ -1,0 +1,19 @@
+---
+bifrost_enabled: false
+bifrost_root: "{{ ansible_facts.user_dir }}/{{ role_name }}"
+
+bifrost_uid: "{{ ansible_facts.user_uid }}"
+bifrost_gid: "{{ ansible_facts.user_gid }}"
+
+bifrost_vless_server_name: "bifrost.{{ domain_name }}"
+bifrost_vless_uuid: "{{ lookup('ansible.builtin.env', 'VLESS_UUID') }}"
+bifrost_reality_private_key: "{{ lookup('ansible.builtin.env', 'REALITY_PRIVATE_KEY') }}"
+bifrost_reality_public_key: "{{ lookup('ansible.builtin.env', 'REALITY_PUBLIC_KEY') }}"
+bifrost_reality_short_id: "{{ lookup('ansible.builtin.env', 'REALITY_SHORT_ID') }}"
+
+bifrost_wg_easy_version: 15
+
+bifrost_wg_device: "eth0"
+bifrost_wg_password: "{{ lookup('ansible.builtin.env', 'WG_ADMIN_PASSWORD') }}"
+
+bifrost_tun_bypass: []

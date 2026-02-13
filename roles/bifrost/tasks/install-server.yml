@@ -1,0 +1,13 @@
+---
+- name: "Render server configuration"
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ bifrost_root }}/{{ item.dest }}"
+    mode: "0644"
+  loop:
+    - src: "server/config.json.j2"
+      dest: "sing-box/config.json"
+    - src: "server/compose.yml.j2"
+      dest: "compose.yml"
+  loop_control:
+    label: "{{ item.dest }}"

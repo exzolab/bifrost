@@ -1,0 +1,39 @@
+---
+- name: "Run OS-specific tasks"
+  ansible.builtin.include_tasks:
+    file: "{{ lookup('ansible.builtin.first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "install-{{ ansible_facts.distribution | lower }}.yml"
+        - "install-{{ ansible_facts.os_family | lower }}.yml"
+
+- name: "Install required packages"
+  ansible.builtin.package:
+    name:
+      - sudo
+      - python3
+    state: present
+
+- name: "Create deploy user account"
+  ansible.builtin.user:
+    name: "{{ deploy_user }}"
+    groups: "{{ deploy_groups }}"
+    append: true
+    state: present
+
+- name: "Allow passwordless sudo for deploy user"
+  ansible.builtin.lineinfile:
+    path: "/etc/sudoers.d/{{ deploy_user }}"
+    line: "{{ deploy_user }} ALL=(ALL) NOPASSWD:ALL"
+    create: true
+    mode: "0440"
+    validate: "visudo -cf %s"
+
+- name: "Install SSH public key for deploy user"
+  ansible.posix.authorized_key:
+    key: "{{ lookup('ansible.builtin.file', user_home + '/.ssh/id_ed25519.pub') }}"
+    user: "{{ deploy_user }}"
+    state: present
+  vars:
+    user_home: "{{ lookup('ansible.builtin.env', 'HOME') }}"

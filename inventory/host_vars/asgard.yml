@@ -1,0 +1,8 @@
+---
+bootstrap_enabled: true
+provision_enabled: true
+provision_docker: true
+
+bifrost_enabled: true
+bifrost_role: server
+bifrost_reality_handshake: "vk.com"

@@ -1,0 +1,13 @@
+---
+- name: "Bootstrap and provision servers"
+  remote_user: "{{ setup_user | default('root') }}"
+  hosts: managed
+  roles:
+    - role: bootstrap
+    - role: provision
+
+- name: "Manage application services"
+  remote_user: "{{ deploy_user | default('ansible') }}"
+  hosts: managed
+  roles:
+    - role: bifrost

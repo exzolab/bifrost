@@ -1,0 +1,45 @@
+{
+    "log": {
+        "level": "warn",
+        "timestamp": true
+    },
+    "inbounds": [
+        {
+            "type": "vless",
+            "tag": "vless-in",
+            "listen": "::",
+            "listen_port": 9443,
+            "users": [
+                {
+                    "uuid": "{{ bifrost_vless_uuid }}",
+                    "flow": "xtls-rprx-vision"
+                }
+            ],
+            "tls": {
+                "enabled": true,
+                "server_name": "{{ bifrost_vless_server_name }}",
+                "reality": {
+                    "enabled": true,
+                    "handshake": {
+                        "server": "{{ bifrost_reality_handshake }}",
+                        "server_port": 443
+                    },
+                    "private_key": "{{ bifrost_reality_private_key }}",
+                    "short_id": [
+                        "{{ bifrost_reality_short_id }}"
+                    ]
+                }
+            }
+        }
+    ],
+    "outbounds": [
+        {
+            "type": "direct",
+            "tag": "direct"
+        },
+        {
+            "type": "block",
+            "tag": "block"
+        }
+    ]
+}

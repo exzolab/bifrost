@@ -1,0 +1,28 @@
+---
+- name: "Run OS-specific tasks"
+  ansible.builtin.include_tasks:
+    file: "{{ lookup('ansible.builtin.first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "install-{{ ansible_facts.distribution | lower }}.yml"
+        - "install-{{ ansible_facts.os_family | lower }}.yml"
+
+- name: "Add deploy user to docker group"
+  ansible.builtin.user:
+    name: "{{ deploy_user }}"
+    groups: docker
+    append: true
+
+- name: "Ensure deploy Docker network is present"
+  community.docker.docker_network:
+    name: "{{ deploy_network }}"
+    state: present
+
+# - name: "Login to forge.exzo.net"
+#   community.docker.docker_login:
+#     registry_url: "https://forge.exzo.net/"
+#     username: "ansible@exzo.net"
+#     password: "{{ docker_engine_forge_password }}"
+#     state: present
+#   when: docker_engine_forge_enabled | bool

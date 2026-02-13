@@ -1,0 +1,9 @@
+---
+- when: bootstrap_enabled | bool
+  tags:
+    - setup-all
+    - bootstrap
+  block:
+    - name: "Run host bootstrap tasks"
+      ansible.builtin.include_tasks:
+        file: "install.yml"

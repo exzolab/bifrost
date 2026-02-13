@@ -1,0 +1,49 @@
+---
+- name: "Install APT prerequisites"
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - gnupg2
+    state: present
+    update_cache: true
+
+- name: "Download APT GPG key"
+  ansible.builtin.get_url:
+    url: "{{ docker_engine_repo_baseurl }}/{{ ansible_facts.distribution | lower }}/gpg"
+    dest: "/usr/share/keyrings/docker-keyring.asc"
+    mode: "0644"
+  register: docker_engine_gpg_key
+
+- name: "Configure APT repository"
+  ansible.builtin.deb822_repository:
+    name: docker
+    types: deb
+    uris: "{{ docker_engine_repo_baseurl }}/{{ ansible_facts.distribution | lower }}"
+    suites: "{{ ansible_facts.distribution_release }}"
+    components: stable
+    signed_by: "{{ docker_engine_gpg_key.dest }}"
+    state: present
+
+- name: "Install Docker Engine packages"
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+    update_cache: true
+
+- name: "Check if daemon.json exists"
+  ansible.builtin.stat:
+    path: /etc/docker/daemon.json
+  register: docker_engine_daemon_json
+
+- name: "Create daemon.json when missing"
+  ansible.builtin.copy:
+    src: "daemon.json"
+    dest: "/etc/docker/daemon.json"
+    mode: "0644"
+  when: not docker_engine_daemon_json.stat.exists
+  notify: "restart docker"

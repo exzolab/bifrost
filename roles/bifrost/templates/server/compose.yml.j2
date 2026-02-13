@@ -1,0 +1,20 @@
+---
+services:
+  sing-box:
+    image: "ghcr.io/sagernet/sing-box:latest"
+    container_name: "sing-box"
+    command: "-D /var/lib/sing-box -C /etc/sing-box run"
+    environment:
+      - "TZ={{ timezone }}"
+    volumes:
+      - "{{ bifrost_root }}/sing-box:/etc/sing-box"
+    networks:
+      - "{{ deploy_network }}"
+    restart: unless-stopped
+
+volumes:
+  wg_etc:
+
+networks:
+  {{ deploy_network }}:
+    external: true

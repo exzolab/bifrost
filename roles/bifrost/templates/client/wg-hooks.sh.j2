@@ -1,0 +1,42 @@
+#!/bin/sh
+set -eu
+
+SINGBOX_IP=$(getent hosts sing-box | awk '{print $1}')
+TABLE="200"
+PRIO="1000"
+
+up() {
+  # default wg-easy hooks
+  iptables -t nat -A POSTROUTING -s {{ bifrost_wg_ipv4_cidr }} -o {{ bifrost_wg_device }} -j MASQUERADE;
+  iptables -A INPUT -p udp -m udp --dport 51820 -j ACCEPT;
+  iptables -A FORWARD -i wg0 -j ACCEPT;
+  iptables -A FORWARD -o wg0 -j ACCEPT;
+
+  ip route add default dev sb0 table 200
+{% for ip in bifrost_tun_bypass %}
+  ip rule add from {{ ip }} lookup main priority 9000
+{% endfor %}
+  ip rule add from {{ bifrost_wg_ipv4_cidr }} lookup 200 priority 10000
+}
+
+down() {
+  ip rule del from {{ bifrost_wg_ipv4_cidr }} lookup 200
+{% for ip in bifrost_tun_bypass %}
+  ip rule del from {{ ip }} lookup main
+{% endfor %}
+  ip route del default dev sb0 table 200
+
+  iptables -t nat -D POSTROUTING -s {{ bifrost_wg_ipv4_cidr }} -o {{ bifrost_wg_device }} -j MASQUERADE;
+  iptables -D INPUT -p udp -m udp --dport 51820 -j ACCEPT;
+  iptables -D FORWARD -i wg0 -j ACCEPT;
+  iptables -D FORWARD -o wg0 -j ACCEPT;
+}
+
+case "${1:-}" in
+  up) up ;;
+  down) down ;;
+  *)
+    echo "usage: $0 {up|down}" >&2
+    exit 2
+    ;;
+esac

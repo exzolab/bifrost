@@ -1,0 +1,7 @@
+---
+profile: null
+
+# Skip specific rules
+skip_list:
+  - name[template]
+  - role-name[path]

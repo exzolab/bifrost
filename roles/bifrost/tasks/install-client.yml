@@ -1,0 +1,26 @@
+---
+- name: "Ensure client directories exist"
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - path: "{{ bifrost_root }}/wg-easy"
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: "Render client configuration"
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ bifrost_root }}/{{ item.dest }}"
+    mode: "{{ item.mode | default('0644') }}"
+  loop:
+    - src: "client/config.json.j2"
+      dest: "sing-box/config.json"
+    - src: "client/wg-hooks.sh.j2"
+      dest: "wg-easy/hooks.sh"
+      mode: "0755"
+    - src: "client/compose.yml.j2"
+      dest: "compose.yml"
+  loop_control:
+    label: "{{ item.dest }}"

@@ -1,0 +1,9 @@
+---
+- when: provision_enabled | bool
+  tags:
+    - setup-all
+    - provision
+  block:
+    - when: provision_docker | bool
+      ansible.builtin.import_role:
+        name: docker_engine

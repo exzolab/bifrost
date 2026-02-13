@@ -1,0 +1,40 @@
+---
+- name: Fail if domain name is not specified
+  ansible.builtin.fail:
+    msg: >-
+      domain_name is required, but it does not need to be a real domain;
+      it is only used to validate sing-box client/server handshakes.
+  when: lookup('vars', 'domain_name', default='') | string | length == 0
+
+- name: Fail if role is invalid
+  ansible.builtin.fail:
+    msg: "Invalid role (`{{ bifrost_role }}`). Expected one of: server, client."
+  when: bifrost_role not in ["server", "client"]
+
+- name: Fail if server settings are missing
+  ansible.builtin.fail:
+    msg: "You need to define a required configuration setting (`{{ item }}`)."
+  when:
+    - bifrost_role == "server"
+    - "lookup('vars', item, default='') | string | length == 0"
+  loop:
+    - bifrost_vless_uuid
+    - bifrost_reality_private_key
+    - bifrost_reality_short_id
+    - bifrost_reality_handshake
+
+- name: Fail if client settings are missing
+  ansible.builtin.fail:
+    msg: "You need to define a required configuration setting (`{{ item }}`)."
+  when:
+    - bifrost_role == "client"
+    - "lookup('vars', item, default='') | string | length == 0"
+  loop:
+    - bifrost_server
+    - bifrost_vless_uuid
+    - bifrost_reality_public_key
+    - bifrost_reality_short_id
+    - bifrost_wg_password
+    - bifrost_wg_endpoint
+    - bifrost_wg_ipv4_cidr
+    - bifrost_wg_ipv6_cidr

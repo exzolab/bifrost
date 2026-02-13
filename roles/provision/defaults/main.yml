@@ -1,0 +1,4 @@
+---
+provision_enabled: false
+provision_docker: false
+provision_nvidia_gpu: false

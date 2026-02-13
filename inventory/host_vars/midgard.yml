@@ -1,0 +1,12 @@
+---
+bootstrap_enabled: true
+provision_enabled: true
+provision_docker: true
+
+bifrost_enabled: true
+bifrost_role: client
+bifrost_server: "{{ hostvars['asgard'].ansible_host }}"
+bifrost_wg_endpoint: "{{ ansible_host }}"
+bifrost_wg_ipv4_cidr: "10.9.8.0/24"
+bifrost_wg_ipv6_cidr: "fda1:b2c3:d4e5::/64"
+bifrost_wg_insecure: true

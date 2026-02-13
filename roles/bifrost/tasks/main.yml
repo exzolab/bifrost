@@ -1,0 +1,47 @@
+---
+- when: bifrost_enabled | bool
+  tags:
+    - gen-secrets
+  block:
+    - name: Generate secrets
+      ansible.builtin.include_tasks:
+        file: "gen-secrets.yml"
+
+- when: bifrost_enabled | bool
+  tags:
+    - setup-all
+    - setup-bifrost
+    - install-all
+    - install-bifrost
+  block:
+    - name: Validate configuration
+      ansible.builtin.include_tasks:
+        file: "validate.yml"
+
+    - name: Install stack
+      ansible.builtin.include_tasks:
+        file: "install.yml"
+
+- when: bifrost_enabled | bool
+  tags:
+    - setup-all
+    - setup-bifrost
+    - start-all
+    - start-bifrost
+  block:
+    - name: Start stack
+      community.docker.docker_compose_v2:
+        project_src: "{{ bifrost_root }}"
+        remove_orphans: true
+        state: present
+
+- when: bifrost_enabled | bool
+  tags:
+    - stop-all
+    - stop-bifrost
+  block:
+    - name: Stop stack
+      community.docker.docker_compose_v2:
+        project_src: "{{ bifrost_root }}"
+        remove_orphans: true
+        state: absent

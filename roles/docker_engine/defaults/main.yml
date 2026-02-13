@@ -1,0 +1,4 @@
+---
+docker_engine_repo_baseurl: "https://download.docker.com/linux"
+docker_engine_forge_enabled: false
+docker_engine_forge_password: "{{ lookup('ansible.builtin.env', 'FORGEJO_REGISTRY_PASSWORD') }}"

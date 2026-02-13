@@ -1,0 +1,12 @@
+---
+timezone: America/Los_Angeles
+
+deploy_user: ansible
+deploy_groups: [sudo]
+deploy_network: edge
+
+arch_map:
+  x86_64: amd64
+  aarch64: arm64
+
+domain_name: ""
