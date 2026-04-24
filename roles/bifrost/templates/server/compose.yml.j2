@@ -1,7 +1,7 @@
 ---
 services:
   sing-box:
-    image: "ghcr.io/sagernet/sing-box:latest"
+    image: "{{ bifrost_singbox_image }}"
     container_name: "sing-box"
     command: "-D /var/lib/sing-box -C /etc/sing-box run"
     environment:

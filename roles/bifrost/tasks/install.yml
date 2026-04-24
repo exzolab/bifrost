@@ -1,5 +1,5 @@
 ---
-- name: Ensure directories exist
+- name: Ensure Bifrost directories exist
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: directory
@@ -10,6 +10,6 @@
   loop_control:
     label: "{{ item.path }}"
 
-- name: Include setup tasks
+- name: Include Bifrost setup tasks
   ansible.builtin.include_tasks:
     file: "install-{{ bifrost_role }}.yml"

@@ -1,13 +1,12 @@
 ---
-- name: "Render server configuration"
+- name: Render Bifrost server sing-box config
   ansible.builtin.template:
-    src: "{{ item.src }}"
-    dest: "{{ bifrost_root }}/{{ item.dest }}"
+    src: "server/config.json.j2"
+    dest: "{{ bifrost_root }}/sing-box/config.json"
     mode: "0644"
-  loop:
-    - src: "server/config.json.j2"
-      dest: "sing-box/config.json"
-    - src: "server/compose.yml.j2"
-      dest: "compose.yml"
-  loop_control:
-    label: "{{ item.dest }}"
+
+- name: Render Bifrost server compose config
+  ansible.builtin.template:
+    src: "server/compose.yml.j2"
+    dest: "{{ bifrost_root }}/compose.yml"
+    mode: "0644"

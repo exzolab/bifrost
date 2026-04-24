@@ -1,0 +1,5 @@
+---
+- name: "restart bifrost"
+  community.docker.docker_compose_v2:
+    project_src: "{{ bifrost_root }}"
+    state: restarted

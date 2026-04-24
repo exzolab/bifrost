@@ -1,18 +1,17 @@
 ---
 services:
   sing-box:
-    image: "ghcr.io/sagernet/sing-box:latest"
+    image: "{{ bifrost_singbox_image }}"
     container_name: "sing-box"
     command: "-D /var/lib/sing-box -C /etc/sing-box run"
     environment:
       - "TZ={{ timezone }}"
     volumes:
       - "{{ bifrost_root }}/sing-box:/etc/sing-box"
+      - "sb_data:/var/lib/sing-box"
     ports:
       - "51820:51820/udp"
-{% if bifrost_wg_insecure | default(false) | bool %}
-      - "51821:51821/tcp"
-{% endif %}
+      - "50080:1080"
     cap_add:
       - NET_ADMIN
     sysctls:
@@ -32,13 +31,10 @@ services:
       retries: 5
 
   wg-easy:
-    image: "ghcr.io/wg-easy/wg-easy:{{ bifrost_wg_easy_version }}"
+    image: "{{ bifrost_wg_easy_image }}"
     container_name: "wg-easy"
     environment:
       - "TZ={{ timezone }}"
-{% if bifrost_wg_insecure | default(false) | bool %}
-      - "INSECURE=true"
-{% endif %}
       - "DISABLE_IPV6=true"
       - "INIT_ENABLED=true"
       - "INIT_USERNAME=admin"
@@ -62,6 +58,9 @@ services:
         restart: true
     network_mode: "service:sing-box"
     restart: unless-stopped
+
+volumes:
+  sb_data:
 
 networks:
   {{ deploy_network }}:

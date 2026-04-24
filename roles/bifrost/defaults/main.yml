@@ -2,16 +2,26 @@
 bifrost_enabled: false
 bifrost_root: "{{ ansible_facts.user_dir }}/{{ role_name }}"
 
+bifrost_singbox_image: "ghcr.io/sagernet/sing-box:v1.13.9"
+bifrost_wg_easy_image: "ghcr.io/wg-easy/wg-easy:15.2.2"
+
 bifrost_vless_server_name: "bifrost.{{ domain_name }}"
 bifrost_vless_uuid: "{{ lookup('ansible.builtin.env', 'VLESS_UUID') }}"
 bifrost_reality_private_key: "{{ lookup('ansible.builtin.env', 'REALITY_PRIVATE_KEY') }}"
 bifrost_reality_public_key: "{{ lookup('ansible.builtin.env', 'REALITY_PUBLIC_KEY') }}"
 bifrost_reality_short_id: "{{ lookup('ansible.builtin.env', 'REALITY_SHORT_ID') }}"
 
-bifrost_wg_easy_version: 15
 bifrost_wg_device: "eth0"
 bifrost_wg_password: "{{ lookup('ansible.builtin.env', 'WG_ADMIN_PASSWORD') }}"
 
-bifrost_tun_bypass: []
+bifrost_tun_bypass_ips: []
 
-bifrost_dns_hijack: false
+bifrost_rule_set:
+  - name: "ru-whitelist"
+    url: "https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/refs/heads/release/srs/ru-whitelist.srs"
+  - name: "geoip-ru"
+    url: "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-ru.srs"
+bifrost_rules:
+  domain: ["ipinfo.io", "ifconfig.me", "ipify.org", "checkip.amazonaws.com"]
+  domain_suffix: [".ru", ".su", ".ru.com", ".ru.net"]
+  domain_keyword: ["xn--"]

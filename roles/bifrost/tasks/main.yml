@@ -14,11 +14,11 @@
     - install-all
     - install-bifrost
   block:
-    - name: Validate configuration
+    - name: Validate Bifrost configuration
       ansible.builtin.include_tasks:
         file: "validate.yml"
 
-    - name: Install stack
+    - name: Install Bifrost stack
       ansible.builtin.include_tasks:
         file: "install.yml"
 
@@ -29,7 +29,7 @@
     - start-all
     - start-bifrost
   block:
-    - name: Start stack
+    - name: Start Bifrost stack
       community.docker.docker_compose_v2:
         project_src: "{{ bifrost_root }}"
         remove_orphans: true
@@ -40,7 +40,7 @@
     - stop-all
     - stop-bifrost
   block:
-    - name: Stop stack
+    - name: Stop Bifrost stack
       community.docker.docker_compose_v2:
         project_src: "{{ bifrost_root }}"
         remove_orphans: true
